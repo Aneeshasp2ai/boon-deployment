@@ -1,0 +1,13 @@
+trigger: main
+
+resources:
+  - type: ec2
+    instance_name: demo
+    keypair: system
+    ami: ubuntu image
+    security_group: some ips
+    display_name: create new instance
+
+  - type: s3
+    bucket_name: demobucket
+    display_name: create new bucket
