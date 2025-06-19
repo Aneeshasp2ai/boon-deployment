@@ -18,7 +18,8 @@ jobs:
         aws-region: ap-south-1
 
 
-    -name: Upload to the S3
-     run: | echo "uploaded and runs at: http://$ {{ secrets.S3_aps2-bucket }}.s3-website-$ {{ secrets.ap-south-1 }}.amazonaws.com"
-     
+    - name: Upload to the S3
+      run: |
+        echo "uploaded and runs at: http://${{ secrets.S3_APS2_BUCKET }}.s3-website-${{ secrets.AWS_REGION }}.amazonaws.com"
+
      
