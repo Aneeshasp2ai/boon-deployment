@@ -20,6 +20,6 @@ jobs:
 
     - name: Upload to the S3
       run: |
-        echo "uploaded and runs at: http://${{ secrets.S3_APS2_BUCKET }}.s3-website-${{ secrets.AWS_REGION }}.amazonaws.com"
+        echo "upload and runs at: http://${{ secrets.S3_APS2_BUCKET }}.s3-website-${{ secrets.AWS_REGION }}.amazonaws.com"
 
      
