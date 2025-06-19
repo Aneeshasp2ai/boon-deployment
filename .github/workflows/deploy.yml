@@ -10,10 +10,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Zip the build directory
+      - name: Zip entire repository
         run: |
-          zip -r build.zip build/
-          ls -lh build.zip
+          zip -r repo.zip .
+          ls -lh repo.zip
+
 
       - name: Upload ZIP to S3
         run: |
