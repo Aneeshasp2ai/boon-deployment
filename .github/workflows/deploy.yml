@@ -19,5 +19,5 @@ jobs:
 
     - name: Upload to the S3
       run: |
-        aws s3 sync build/ s3://${{ secrets.S3_APS2_BUCKET }} --delete
+        aws s3 sync s3://${{ secrets.S3_APS2_BUCKET }} --delete
         echo "Upload complete. Your site is live at: http://${{ secrets.S3_APS2_BUCKET }}.s3-website-${{ secrets.AWS_REGION }}.amazonaws.com"
