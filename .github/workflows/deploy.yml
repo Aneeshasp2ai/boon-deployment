@@ -10,12 +10,13 @@ jobs:
     - name: Getting the code
       uses: actions/checkout@v3
 
-    -name: Connect to AWS
-     uses: aws-actions/configure-aws-credentials@v2
-     with:
-       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-       aws-region: ${{ ap-south-1 }}
+    - name: Connect to AWS
+      uses: aws-actions/configure-aws-credentials@v2
+        with:
+         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+         aws-region: ap-south-1
+
 
     -name: Upload to the S3
      run: | echo "uploaded and runs at: http://$ {{ secrets.S3_aps2-bucket }}.s3-website-$ {{ secrets.ap-south-1 }}.amazonaws.com"
