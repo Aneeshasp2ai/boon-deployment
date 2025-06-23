@@ -1,0 +1,52 @@
+# appspec.yml - This tells CodeDeploy HOW to deploy your app!
+# Put this file in the ROOT of your project
+
+version: 0.0
+os: linux
+
+files:
+  # Copy all files from S3 to EC2
+  - source: /
+    destination: /var/www/html/myapp
+    overwrite: yes
+
+permissions:
+  # Set correct permissions
+  - object: /var/www/html/myapp
+    pattern: "**"
+    owner: ec2-user
+    group: ec2-user
+    mode: 755
+
+hooks:
+  # These are like "steps" that run during deployment
+  
+  BeforeInstall:
+    # Run BEFORE copying files
+    - location: scripts/stop_application.sh
+      timeout: 300
+      runas: root
+      
+  AfterInstall:
+    # Run AFTER copying files
+    - location: scripts/install_dependencies.sh
+      timeout: 300
+      runas: root
+      
+  ApplicationStart:
+    # Start your application
+    - location: scripts/start_application.sh
+      timeout: 300
+      runas: root
+      
+  ApplicationStop:
+    # Stop your application (for updates)
+    - location: scripts/stop_application.sh
+      timeout: 300
+      runas: root
+      
+  ValidateService:
+    # Check if app is running correctly
+    - location: scripts/validate_service.sh
+      timeout: 300
+      runas: root
