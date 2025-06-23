@@ -1,30 +1,42 @@
-name: Upload Entire Repo ZIP to S3
+name: Upload Entire Repo ZIP to S3 and Deploy via CodeDeploy
 
 on:
   push:
     branches: [ main ]
 
 jobs:
-  zip-and-upload:
+  zip-and-deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
+
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-access-key-id: ${{ secrets.AWS_SECRET_ACCESS_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
-        
+
     - name: Zip entire repository
       run: |
-        # Create zip excluding .git directory and other unnecessary files
-        zip -r repo.zip . -x "*.git*" "node_modules/*" "*.DS_Store"
-        ls -lh repo.zip
-        
+        PACKAGE_NAME="repo-$(date +%Y%m%d-%H%M%S).zip"
+        echo "PACKAGE_NAME=$PACKAGE_NAME" >> $GITHUB_ENV
+        zip -r $PACKAGE_NAME . -x "*.git*" "node_modules/*" "*.DS_Store"
+        ls -lh $PACKAGE_NAME
+
     - name: Upload ZIP to S3
       run: |
-        aws s3 cp repo.zip s3://${{ secrets.S3_BUCKET_NAME }}/repo-$(date +%Y%m%d-%H%M%S).zip
+        aws s3 cp ${{ env.PACKAGE_NAME }} s3://${{ secrets.S3_BUCKET_NAME }}/deployments/${{ env.PACKAGE_NAME }}
+
+    - name: Trigger CodeDeploy Deployment
+      run: |
+        aws deploy create-deployment \
+          --application-name ${{ secrets.CODEDEPLOY_APPLICATION_NAME }} \
+          --deployment-group-name ${{ secrets.CODEDEPLOY_DEPLOYMENT_GROUP }} \
+          --s3-location bucket=${{ secrets.S3_BUCKET_NAME }},key=deployments/${{ env.PACKAGE_NAME }},bundleType=zip \
+          --description "GitHub Actions deployment - $(date)"
+
+    - name: Done
+      run: echo "✅ CodeDeploy deployment triggered successfully!"
