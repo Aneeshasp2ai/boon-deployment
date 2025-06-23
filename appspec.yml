@@ -5,9 +5,8 @@ version: 0.0
 os: linux
 
 files:
-  # Copy all files from S3 to EC2
   - source: /
-    destination: /var/www/html/myapp
+    destination: /home/ec2-user/app
     overwrite: yes
 
 permissions:
@@ -28,10 +27,9 @@ hooks:
       runas: root
       
   AfterInstall:
-    # Run AFTER copying files
-    - location: scripts/install_dependencies.sh
-      timeout: 300
-      runas: root
+    - location: scripts/restart.sh
+      timeout: 180
+      runas: ec2-user
       
   ApplicationStart:
     # Start your application
