@@ -28,7 +28,3 @@ jobs:
     - name: Upload ZIP to S3
       run: |
         aws s3 cp repo.zip s3://${{ secrets.S3_BUCKET_NAME }}/repo-$(date +%Y%m%d-%H%M%S).zip
-        
-    # Optional: Clean up
-    - name: Clean up
-      run: rm repo.zip
